@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="form" onsubmit="return validateForm()">
+      <label for="firstname">First Name</label>
+      <input type="text" name="fname" id="fname" required /><br /><br />
+      <label for="lastname">Last Name</label>
+      <input type="text" name="lname" id="lname" required /><br /><br />
+      <label for="middlename">Middle Name (Optional)</label>
+      <input type="text" name="middlename" id="middlename" /><br /><br />
+      <label for="email">Email Address</label>
+      <input type="text" name="email" id="email" required /><br /><br />
+      <label for="phone">mobile</label>
+      <input type="tel" name="phone" id="mobile" required /><br /><br />
+      <label for="gender">Gender:</label><br />
+      <select id="gender" name="gender" required>
+        <option value="">Select</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option></select
+      ><br />
+      <button type="submit">Sign Up</button>
+    </form>
+    <script>
+      function validateForm() {
+        let form = document.forms["form"];
+        let fname = form["fname"].value;
+        let lname = form["lname"].value;
+        let mail = form["email"].value;
+        let contact = form["mobile"].value;
+        let genderStatus = form["gender"].value;
+        let isValid = true; // Flag to track form validity
+        if (fname === "") {
+          alert("First Name must be filled out");
+          isValid = false;
+        }
+        if (lname === "") {
+          alert("Last Name must be filled out");
+          isValid = false;
+        }
+        if (mail === "") {
+          alert("Email must be filled out");
+          isValid = false;
+        }
+        if (contact === "" || contact.length !== 11) {
+          alert("Phone contact is required and should be exactly 10 digits.");
+          isValid = false;
+        }
+        if (genderStatus === "") {
+          alert("Please select your gender");
+          isValid = false;
+        }
+        if (isValid) {
+          // Send data to server only if the form is valid
+          let jsonObject = {
+            fname: fname,
+            lname: lname,
+            otherName: form["othername"].value,
+            mail: mail,
+            contact: contact,
+            genderStatus: genderStatus,
+          };
+          fetch("http://127.0.0.1:3000", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(jsonObject),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Success:", data);
+              form.reset(); // Reset form fields
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
+        return false; // Prevent form from submitting the default way
+      }
+    </script>
+  </body>
+</html>
